@@ -1,0 +1,64 @@
+language: python
+python:
+  - 3.7
+
+services:
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.4.2
+
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install pytest
+  - export MONGOPASSWORD=${MONGOPASSWORD}
+  - export DBNAME=${DBNAMEDEV}
+  - export ENVIRONMENT=${ENVDEV}
+
+before_deploy:
+  - curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+  - heroku --version
+
+script: pytest
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - docker build -t smart-vit/service-name .
+        - docker ps -a
+    - stage: test
+      script:
+        - flake8
+        - coverage run -m pytest
+        - coverage xml
+    - stage: deploy-dev
+      script:
+        - export MONGOPASSWORD=${MONGOPASSWORD}
+        - export DBNAME=${DBNAMEDEV}
+        - export ENVIRONMENT=${ENVDEV}
+        - docker-compose build
+        - docker images -a
+        - bash docker_push.sh
+      on:
+        branch: feature/cd_configuration
+    - stage: deploy-stg
+      script:
+        - export MONGOPASSWORD=${MONGOPASSWORD}
+        - export DBNAME=${DBNAMESTG}
+        - export ENVIRONMENT=${ENVSTG}
+        - docker-compose build
+        - bash docker_push.sh
+      on:
+        branch: devel
+    - stage: deploy-prd
+      script:
+        - export MONGOPASSWORD=${MONGOPASSWORD}
+        - export DBNAME=${DBNAMEPRD}
+        - export ENVIRONMENT=${ENVPRD}
+        - docker-compose build
+        - bash docker_push.sh
+
+after_success:
+  - python-codacy-coverage -r coverage.xml
