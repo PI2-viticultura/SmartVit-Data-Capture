@@ -16,11 +16,11 @@ services:
             - './data:/data'
             - ./init-mongo.js :/docker-entrypoint-initdb.d/
 
-    name-service:
+    data-capture:
         build: .
         ports: 
           - 8000:8000
-        container_name: name-service
+        container_name: data-capture
         restart: always
         volumes: 
           - './app:/app'

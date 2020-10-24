@@ -26,7 +26,7 @@ jobs:
   include:
     - stage: build
       script:
-        - docker build -t smart-vit/service-name .
+        - docker build -t smart-vit/data-capture .
         - docker ps -a
     - stage: test
       script:
