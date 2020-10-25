@@ -1,5 +1,5 @@
 DATABASE_CONFIG = {
-    "DB_HOST": "dataCapture",
+    "DB_HOST": "data-capture-mongodb",
     "DB_PORT": 27017,
     "DB_USERNAME": "admin",
     "DB_PASSWORD": "password",
