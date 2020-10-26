@@ -27,7 +27,7 @@ def register_new_measurement(request):
         measurements_sent = request['data']
 
         for sensor_id, data in measurements_sent.items():
-            sensor = db.get_one_by_identifier(sensor_id, 'sensor')
+            sensor = db.get_one_by_label('identifier', sensor_id, 'sensor')
 
             if not sensor:
                 return {'error': 'Sensor ' +
