@@ -26,39 +26,13 @@ jobs:
   include:
     - stage: build
       script:
-        - docker build -t smart-vit/data-capture .
+        - docker build -t smart-vit/data-capture-service .
         - docker ps -a
     - stage: test
       script:
         - flake8
         - coverage run -m pytest
         - coverage xml
-    - stage: deploy-dev
-      script:
-        - export MONGOPASSWORD=${MONGOPASSWORD}
-        - export DBNAME=${DBNAMEDEV}
-        - export ENVIRONMENT=${ENVDEV}
-        - docker-compose build
-        - docker images -a
-        - bash docker_push.sh
-      on:
-        branch: feature/cd_configuration
-    - stage: deploy-stg
-      script:
-        - export MONGOPASSWORD=${MONGOPASSWORD}
-        - export DBNAME=${DBNAMESTG}
-        - export ENVIRONMENT=${ENVSTG}
-        - docker-compose build
-        - bash docker_push.sh
-      on:
-        branch: devel
-    - stage: deploy-prd
-      script:
-        - export MONGOPASSWORD=${MONGOPASSWORD}
-        - export DBNAME=${DBNAMEPRD}
-        - export ENVIRONMENT=${ENVPRD}
-        - docker-compose build
-        - bash docker_push.sh
 
 after_success:
   - python-codacy-coverage -r coverage.xml
