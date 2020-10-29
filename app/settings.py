@@ -3,6 +3,7 @@ from utils.constants import (
 )
 import os
 
+
 def load_database_params():
     port = os.getenv("DB_PORT", DATABASE_CONFIG["DB_PORT"])
     port = int(port)
@@ -13,7 +14,10 @@ def load_database_params():
         "username": os.getenv("DB_USERNAME", DATABASE_CONFIG["DB_USERNAME"]),
         "password": os.getenv("DB_PASSWORD", DATABASE_CONFIG["DB_PASSWORD"]),
         "authSource": os.getenv("authSource", DATABASE_CONFIG["authSource"]),
-        "authMechanism": os.getenv("authMechanism", DATABASE_CONFIG["authMechanism"])
+        "authMechanism": os.getenv(
+            "authMechanism",
+            DATABASE_CONFIG["authMechanism"]
+        )
     }
 
     return params

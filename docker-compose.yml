@@ -2,9 +2,9 @@ version: '3.7'
 
 services:
 
-    service-mongodb:
+    data-capture-mongodb:
         image: mongo
-        container_name: service-mongodb
+        container_name: data-capture-mongodb
         ports: 
           - '27017:27017'
         # restart: always
