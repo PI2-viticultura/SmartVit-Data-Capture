@@ -27,8 +27,8 @@ Fix #
 - [ ] O pull request possui labels.
 
 ### Critérios de aceitação (Usado pelo Revisor)  
-- [ ] Os commits seguem a [política de commits do repositório](https://github.com/PagueVeloz-LiftLearning/API-PagueVeloz/blob/develop/.github/Plano_de_Gerencia_de_Configuracao_de_Software.md).
-- [ ] As branches seguem a [política de branches do repositório](https://github.com/PagueVeloz-LiftLearning/API-PagueVeloz/blob/develop/.github/Plano_de_Gerencia_de_Configuracao_de_Software.md).
+- [ ] Os commits seguem a política de commits do repositório.
+- [ ] As branches seguem a política de branches do repositório.
 - [ ] Não há erros de linter.
 - [ ] A build está passando (travis, code climate).
 - [ ] Foram criadas rotas para serem consumidas no Frontend
