@@ -1,5 +1,4 @@
 from models.db import MongoDB
-from bson.json_util import dumps
 
 
 def register_new_measurement(request):
