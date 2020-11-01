@@ -83,6 +83,11 @@ class MongoDB():
         document = collection.find_one({label: identifier})
         return document
 
+    def get_one_by_identifier(self, identifier, collection):
+        collection = self.get_collection(collection)
+        document = collection.find_one({'identifier': identifier})
+        return document
+
     def get_all(self, collection):
         collection = self.get_collection(collection)
         document = collection.find()
