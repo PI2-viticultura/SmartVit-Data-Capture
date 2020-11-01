@@ -1,4 +1,5 @@
 from models.db import MongoDB
+from bson.json_util import dumps
 
 
 def register_new_measurement(request):
@@ -27,11 +28,12 @@ def register_new_measurement(request):
         measurements_sent = request['data']
 
         for sensor_id, data in measurements_sent.items():
-            sensor = db.get_one_by_label('identifier', sensor_id, 'sensor')
+            sensor = db.get_one_by_identifier(sensor_id, 'sensor')
 
             if not sensor:
                 return {'error': 'Sensor ' +
                         sensor_id + ' doesn\'t exist'}, 500
+
             elif 'measurements' not in sensor.keys():
                 sensor['measurements'] = []
             elif len(sensor['measurements']) == 0:
