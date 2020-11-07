@@ -1,6 +1,4 @@
 from models.db import MongoDB
-from bson.json_util import dumps
-from bson import ObjectId
 import requests
 
 
@@ -40,9 +38,18 @@ def register_new_measurement(request):
                 sensor['measurements'] = []
             elif len(sensor['measurements']) == 0:
                 sensor['measurements'] = []
-            
-            if "moist_percent_1" in data.keys() and "moist_percent_2" in data.keys() and "moist_percent_3" in data.keys():
-                if (data["moist_percent_1"] + data["moist_percent_2"] + data["moist_percent_3"])/3 <= 0.3:
+
+            if (
+                "moist_percent_1" in data.keys()
+                and "moist_percent_2" in data.keys()
+                and "moist_percent_3" in data.keys()
+            ):
+
+                if (
+                  data["moist_percent_1"] +
+                  data["moist_percent_2"] +
+                  data["moist_percent_3"]
+                )/3 <= 0.3:
                     system = db.get_system_by_sensor_id(sensor['_id'])
                     winery = db.get_winery_by_system_id(system['_id'])
                     data = dict()
@@ -50,8 +57,11 @@ def register_new_measurement(request):
                     data['title'] = 'Sistema de Irrigacao'
                     data['winery'] = str(winery['_id'])
                     data['message'] = 'Sistema de Irrigacao Ativado'
-                    requests.post("https://smartvit-notification-dev.herokuapp.com/notification", json=data)
-                    
+                    url = "https://smartvit-notification-dev.herokuapp.com"
+                    requests.post(
+                      url + "/notification",
+                      json=data
+                    )
 
             for label, value in data.items():
                 request_sent = {"sensor_id": sensor_id,
@@ -75,7 +85,7 @@ def register_new_measurement(request):
                     errors.append(
                         'Something gone wrong updating measurements from '
                         + sensor_id)
-            
+
         if len(errors) == 0:
             return {"message": "success"}, 200
         else:
