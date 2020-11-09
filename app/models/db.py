@@ -92,3 +92,11 @@ class MongoDB():
         collection = self.get_collection(collection)
         document = collection.find()
         return document
+
+    def get_winery_by_system_id(self, identifier):
+        collection = self.get_collection('winery')
+        return collection.find_one({"system._id": identifier})
+
+    def get_system_by_sensor_id(self, identifier):
+        collection = self.get_collection('system')
+        return collection.find_one({"sensors._id": identifier})
