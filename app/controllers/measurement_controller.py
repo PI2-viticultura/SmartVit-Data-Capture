@@ -7,7 +7,7 @@ from datetime import datetime
 def register_new_measurement(request):
     # Validade data
     sensor_labels = [
-        "vento_MS", 
+        "vento_MS",
         "vento_direcao",
         "qtd_chuva",
         "temp_celsius",
@@ -25,7 +25,7 @@ def register_new_measurement(request):
             "Dado dos sensores não enviados"
         }, 400
 
-    for sensor_id, sensor_values  in request['data'].items(): 
+    for sensor_id, sensor_values  in request['data'].items():
         for label in sensor_values.keys():
             if not label in sensor_labels:
                 return {
@@ -33,13 +33,13 @@ def register_new_measurement(request):
                     "Dado inválido! Dado não autorizado enviado!"
                 }, 400
 
-        for values in sensor_values.values(): 
+        for values in sensor_values.values():
             if (isinstance(values, list) and any([re.search("^\s*$", elem) for elem in values])) or (not values):
                 return {
                     "Erro":
                     "Dado inválido!" + str(values)
                 }, 400
-       
+
     db = MongoDB()
 
     connection_is_alive = db.test_connection()
