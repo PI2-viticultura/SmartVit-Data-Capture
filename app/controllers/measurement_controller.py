@@ -19,22 +19,22 @@ def register_new_measurement(request):
         "moist_percent_3"
     ]
 
-    if not 'data' in request.keys():
+    if 'data' not in request.keys():
         return {
             "Erro":
             "Dado dos sensores não enviados"
         }, 400
 
-    for sensor_id, sensor_values  in request['data'].items():
+    for sensor_id, sensor_values in request['data'].items():
         for label in sensor_values.keys():
-            if not label in sensor_labels:
+            if label not in sensor_labels:
                 return {
                     "Erro":
                     "Dado inválido! Dado não autorizado enviado!"
                 }, 400
 
         for values in sensor_values.values():
-            if (isinstance(values, list) and any([re.search("^\s*$", elem) for elem in values])) or (not values):
+            if (isinstance(values, list) and any([re.search("^\s*$", elem) for elem in values])) or (not values): # noqa
                 return {
                     "Erro":
                     "Dado inválido!" + str(values)
@@ -60,7 +60,7 @@ def register_new_measurement(request):
                 sensor['measurements'] = []
             elif len(sensor['measurements']) == 0:
                 sensor['measurements'] = []
-            
+
             # Register automatic irrigation
             if (
                 "moist_percent_1" in data.keys()
@@ -85,7 +85,7 @@ def register_new_measurement(request):
                       url + "/notification",
                       json=data
                     )
-            
+
             # Update sensor with data
             for label, value in data.items():
                 request_sent = {"sensor_id": sensor_id,
