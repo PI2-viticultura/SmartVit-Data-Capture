@@ -111,6 +111,10 @@ def register_new_measurement(request):
                         + sensor_id)
 
         if len(errors) == 0:
+            url = "https://smartvit-indicator-dev.herokuapp.com/indicators"
+            requests.post(
+                url
+            )
             return {"message": "success"}, 200
         else:
             return{"Error": errors}, 500
