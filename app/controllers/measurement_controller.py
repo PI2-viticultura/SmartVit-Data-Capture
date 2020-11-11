@@ -1,22 +1,44 @@
 from models.db import MongoDB
 import requests
+import re
+from datetime import datetime
 
 
 def register_new_measurement(request):
-    fields = [
-        'data_hora', 'data'
+    # Validade data
+    sensor_labels = [
+        "vento_MS",
+        "vento_direcao",
+        "qtd_chuva",
+        "temp_celsius",
+        "humidity_percent",
+        "pressure_hPa",
+        "sensor_ph",
+        "moist_percent_1",
+        "moist_percent_2",
+        "moist_percent_3"
     ]
 
-    if not all(field in request.keys() for field in fields):
+    if 'data' not in request.keys():
         return {
             "Erro":
-            "Todos os campos são obrigatórios"
+            "Dado dos sensores não enviados"
         }, 400
 
-    if not request["data_hora"]:
-        return {"erro": "Data e hora de coleta não informados"}, 400
-    if not request["data"]:
-        return {"erro": "Medições não enviadas"}, 400
+    for sensor_id, sensor_values in request['data'].items():
+        for label in sensor_values.keys():
+            if label not in sensor_labels:
+                return {
+                    "Erro":
+                    "Dado inválido! Dado não autorizado enviado!"
+                }, 400
+
+        for values in sensor_values.values():
+            if (isinstance(values, list) and any([re.search("^\s*$", elem) for elem in values])) or (not values): # noqa
+                return {
+                    "Erro":
+                    "Dado inválido!" + str(values)
+                }, 400
 
     db = MongoDB()
 
@@ -24,7 +46,7 @@ def register_new_measurement(request):
     errors = []
 
     if connection_is_alive:
-        date_time = request['data_hora']
+        date_time = datetime.now()
         measurements_sent = request['data']
 
         for sensor_id, data in measurements_sent.items():
@@ -39,6 +61,7 @@ def register_new_measurement(request):
             elif len(sensor['measurements']) == 0:
                 sensor['measurements'] = []
 
+            # Register automatic irrigation
             if (
                 "moist_percent_1" in data.keys()
                 and "moist_percent_2" in data.keys()
@@ -63,6 +86,7 @@ def register_new_measurement(request):
                       json=data
                     )
 
+            # Update sensor with data
             for label, value in data.items():
                 request_sent = {"sensor_id": sensor_id,
                                 "value": value,
@@ -87,6 +111,10 @@ def register_new_measurement(request):
                         + sensor_id)
 
         if len(errors) == 0:
+            url = "https://smartvit-indicator-dev.herokuapp.com/indicators"
+            requests.post(
+                url
+            )
             return {"message": "success"}, 200
         else:
             return{"Error": errors}, 500
